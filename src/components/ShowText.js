@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import db from "../firebase-config";
 import firebase from "firebase";
 
@@ -12,11 +12,13 @@ import {
   Button,
   TextField,
   Container,
+  Fab,
   IconButton,
   List,
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
+  Grid,
   Dialog,
   DialogContent,
   DialogActions,
@@ -24,6 +26,7 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  Card,
 } from "@material-ui/core";
 
 function ShowText() {
@@ -34,6 +37,7 @@ function ShowText() {
   const [toUpdateId, setToUpdateId] = useState("");
   const [time, setTime] = useState("");
   const [order, setOrder] = useState("");
+
 
   useEffect(() => {
     console.log("useEffect Hook!!!");
@@ -50,6 +54,7 @@ function ShowText() {
               datetime: doc.data().datatime,
               month: doc.data().month,
               year: doc.data().year,
+              day: doc.data().day,
             };
           })
         );
@@ -102,6 +107,7 @@ function ShowText() {
                 datetime: doc.data().datatime,
                 month: doc.data().month,
                 year: doc.data().year,
+                day: doc.data().day,
               };
             })
           );
@@ -118,6 +124,7 @@ function ShowText() {
                 datetime: doc.data().datatime,
                 month: doc.data().month,
                 year: doc.data().year,
+                day: doc.data().day,
               };
             })
           );
@@ -134,6 +141,7 @@ function ShowText() {
                 datetime: doc.data().datatime,
                 month: doc.data().month,
                 year: doc.data().year,
+                day: doc.data().day,
               };
             })
           );
@@ -154,6 +162,7 @@ function ShowText() {
                 datetime: doc.data().datatime,
                 month: doc.data().month,
                 year: doc.data().year,
+                day: doc.data().day,
               };
             })
           );
@@ -171,6 +180,7 @@ function ShowText() {
                 datetime: doc.data().datatime,
                 month: doc.data().month,
                 year: doc.data().year,
+                day: doc.data().day,
               };
             })
           );
@@ -180,13 +190,16 @@ function ShowText() {
   return (
     <div>
       {/* Filter */}
-      <FormControl style={{ width: "100%" }}>
+      <h2 style={{fontFamily:"cursive",textAlign:"center"}}>Choose Filter</h2>
+      <Grid container spacing={3}>
+      <Grid item xs={12} md={6}>
+      <FormControl style={{ width: "100%" }} >
         <InputLabel id="order-label">Choose filter</InputLabel>
         <Select
-          labelId="order-label"
-          id="select1"
-          value={time}
-          onChange={handleChange}
+        labelId="order-label"
+        id="select1"
+        value={order}
+        onChange={handleChang}
         >
           <MenuItem value={1} onClick={() => filterByTime(1)}>
             Week
@@ -199,6 +212,8 @@ function ShowText() {
           </MenuItem>
         </Select>
       </FormControl>
+      </Grid>
+      <Grid item xs={12} md={6}>
       <FormControl style={{ width: "100%" }}>
         <InputLabel id="order-label">Choose filter</InputLabel>
         <Select
@@ -215,34 +230,66 @@ function ShowText() {
           </MenuItem>
         </Select>
       </FormControl>
+      </Grid>
+      </Grid>
       {/* Show text */}
-      <List dense={true}>
+      <h2 style={{fontFamily:"cursive",textAlign:"center"}}>Your reminder</h2>
+      <Grid
+        container
+        spacing={3}
+        style={{ padding: "10px", marginTop: "20px" }}
+      >
         {text.map((text) => (
-          <ListItem key={text.id}>
-            {/* {console.log(text)} */}
-            {/* <ListItemText primary={text.name} secondary={text.date} />
-            <ListItemText primary={text.date} secondary={text.date} /> */}
-            {text.text}
-            {text.month}
-            <ListItemSecondaryAction>
-              <IconButton
-                edge="end"
-                aria-label="Edit"
-                onClick={() => openUpdateDialog(text)}
-              >
-                <Edit />
-              </IconButton>
-              <IconButton
-                edge="end"
-                aria-label="delete"
-                onClick={() => deleteText(text.id)}
-              >
-                <DeleteOutlineRounded />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
+          <Grid item md={6} xs={12}>
+            <Card>
+              <Grid container spacing={3}>
+                <Grid item xs={6} md={6} className="course-preview">
+                  <div style={{ padding: "10px" }}>
+                    <h6>Date</h6>
+                    <h4>
+                      {text.day} - {text.month + 1} - {text.year}
+                    </h4>
+                  </div>
+                </Grid>
+                <Grid item xs={6} md={6}>
+                  <div>
+                    <h6>Reminder</h6>
+                    <h2>{text.text}</h2>
+                  </div>
+                  <Fab
+                    aria-label="add"
+                    size="small"
+                    style={{
+                      float: "right",
+                      padding: "10px",
+                      margin: "10px",
+                      backgroundColor: "#990000",
+                      color: "#fafafa",
+                    }}
+                    onClick={() => deleteText(text.id)}
+                  >
+                    <DeleteOutlineRounded />
+                  </Fab>
+                  <Fab
+                    aria-label="add"
+                    size="small"
+                    style={{
+                      float: "right",
+                      padding: "10px",
+                      margin: "10px",
+                      backgroundColor: "#2A265F",
+                      color: "#fafafa",
+                    }}
+                    onClick={() => openUpdateDialog(text)}
+                  >
+                    <Edit />
+                  </Fab>
+                </Grid>
+              </Grid>
+            </Card>
+          </Grid>
         ))}
-      </List>
+      </Grid>
 
       {/* update text */}
       <Dialog open={open} onClose={handleClose}>
@@ -250,7 +297,7 @@ function ShowText() {
           <TextField
             autoFocus
             margin="normal"
-            label="Update Todo"
+            label="Update Reminder"
             type="text"
             fullWidth
             name="updateTodo"

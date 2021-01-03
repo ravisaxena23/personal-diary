@@ -32,12 +32,14 @@ const AddText = () => {
       text: input,
       month: new Date().getMonth(),
       year: new Date().getUTCFullYear(),
+      day: new Date().getUTCDate(),
       datetime: firebase.firestore.FieldValue.serverTimestamp(),
     });
     setInput("");
   };
   return (
     <div>
+      <h2 style={{fontFamily:"cursive",textAlign:"center",marginTop:"80px"}}>Add reminder</h2>
       <form noValidate>
         <TextField
           variant="outlined"

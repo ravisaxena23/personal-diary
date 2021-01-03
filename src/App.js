@@ -1,22 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
-import db from './firebase-config'
-import firebase from 'firebase';
-import Text from './components/AddText';
-import ShowText from './components/ShowText';
+import React, { useState, useEffect, Fragment } from "react";
+import "./App.css";
+import db from "./firebase-config";
+import firebase from "firebase";
+import Text from "./components/AddText";
+import ShowText from "./components/ShowText";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
 
-import {Container} from '@material-ui/core';
-
+import { Container } from "@material-ui/core";
 
 function App() {
-
   return (
-    <Container maxWidth="sm">
+    <Fragment>
+      <AppBar position="fixed" style={{backgroundColor:"#2A265F"}}>
+        <Toolbar></Toolbar>
+      </AppBar>
 
-      <Text />
-      <ShowText />
-
-    </Container >
+      <Container maxWidth="xl">
+        <Text />
+        <ShowText />
+      </Container>
+    </Fragment>
   );
 }
 
