@@ -20,6 +20,10 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from "@material-ui/core";
 
 function ShowText() {
@@ -28,20 +32,24 @@ function ShowText() {
   const [open, setOpen] = useState(false);
   const [update, setUpdate] = useState("");
   const [toUpdateId, setToUpdateId] = useState("");
+  const [time, setTime] = useState("");
+  const [order, setOrder] = useState("");
 
   useEffect(() => {
     console.log("useEffect Hook!!!");
-
+    console.log(time);
     db.collection("todos")
-      .orderBy("datetime", "desc")
+      //   .orderBy("datetime", "desc")
       .onSnapshot((snapshot) => {
         console.log("Firebase Snap!");
         setText(
           snapshot.docs.map((doc) => {
             return {
               id: doc.id,
-              name: doc.data().text,
-              datatime: doc.data().datatime,
+              text: doc.data().text,
+              datetime: doc.data().datatime,
+              month: doc.data().month,
+              year: doc.data().year,
             };
           })
         );
@@ -74,12 +82,148 @@ function ShowText() {
     setOpen(false);
   };
 
+  const handleChange = (event) => {
+    setTime(event.target.value);
+  };
+  const handleChang = (event) => {
+    setOrder(event.target.value);
+  };
+
+  const filterByTime = (value, val) => {
+    if (value === 1) {
+      db.collection("todos")
+        .orderBy("datetime")
+        .onSnapshot((snapshot) => {
+          setText(
+            snapshot.docs.map((doc) => {
+              return {
+                id: doc.id,
+                text: doc.data().text,
+                datetime: doc.data().datatime,
+                month: doc.data().month,
+                year: doc.data().year,
+              };
+            })
+          );
+        });
+    } else if (value === 2) {
+      db.collection("todos")
+        .orderBy("month")
+        .onSnapshot((snapshot) => {
+          setText(
+            snapshot.docs.map((doc) => {
+              return {
+                id: doc.id,
+                text: doc.data().text,
+                datetime: doc.data().datatime,
+                month: doc.data().month,
+                year: doc.data().year,
+              };
+            })
+          );
+        });
+    } else if (value === 3) {
+      db.collection("todos")
+        .orderBy("year")
+        .onSnapshot((snapshot) => {
+          setText(
+            snapshot.docs.map((doc) => {
+              return {
+                id: doc.id,
+                text: doc.data().text,
+                datetime: doc.data().datatime,
+                month: doc.data().month,
+                year: doc.data().year,
+              };
+            })
+          );
+        });
+    }
+  };
+
+  const filterByArrivial = (value, val) => {
+    if (value === 1) {
+      db.collection("todos")
+        .orderBy("datetime", "desc")
+        .onSnapshot((snapshot) => {
+          setText(
+            snapshot.docs.map((doc) => {
+              return {
+                id: doc.id,
+                text: doc.data().text,
+                datetime: doc.data().datatime,
+                month: doc.data().month,
+                year: doc.data().year,
+              };
+            })
+          );
+        });
+    } else if (value === 2) {
+      db.collection("todos")
+        .orderBy("datetime")
+        .onSnapshot((snapshot) => {
+          console.log("Firebase Snap!");
+          setText(
+            snapshot.docs.map((doc) => {
+              return {
+                id: doc.id,
+                text: doc.data().text,
+                datetime: doc.data().datatime,
+                month: doc.data().month,
+                year: doc.data().year,
+              };
+            })
+          );
+        });
+    }
+  };
   return (
     <div>
+      {/* Filter */}
+      <FormControl style={{ width: "100%" }}>
+        <InputLabel id="order-label">Choose filter</InputLabel>
+        <Select
+          labelId="order-label"
+          id="select1"
+          value={time}
+          onChange={handleChange}
+        >
+          <MenuItem value={1} onClick={() => filterByTime(1)}>
+            Week
+          </MenuItem>
+          <MenuItem value={2} onClick={() => filterByTime(2)}>
+            Month
+          </MenuItem>
+          <MenuItem value={3} onClick={() => filterByTime(3)}>
+            Year
+          </MenuItem>
+        </Select>
+      </FormControl>
+      <FormControl style={{ width: "100%" }}>
+        <InputLabel id="order-label">Choose filter</InputLabel>
+        <Select
+          labelId="order-label"
+          id="select1"
+          value={order}
+          onChange={handleChang}
+        >
+          <MenuItem value={1} onClick={() => filterByArrivial(1)}>
+            Newest first
+          </MenuItem>
+          <MenuItem value={2} onClick={() => filterByArrivial(2)}>
+            Oldest First
+          </MenuItem>
+        </Select>
+      </FormControl>
+      {/* Show text */}
       <List dense={true}>
         {text.map((text) => (
           <ListItem key={text.id}>
-            <ListItemText primary={text.name} secondary={text.datetime} />
+            {/* {console.log(text)} */}
+            {/* <ListItemText primary={text.name} secondary={text.date} />
+            <ListItemText primary={text.date} secondary={text.date} /> */}
+            {text.text}
+            {text.month}
             <ListItemSecondaryAction>
               <IconButton
                 edge="end"
@@ -100,6 +244,7 @@ function ShowText() {
         ))}
       </List>
 
+      {/* update text */}
       <Dialog open={open} onClose={handleClose}>
         <DialogContent>
           <TextField

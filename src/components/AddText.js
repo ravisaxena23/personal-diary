@@ -30,6 +30,8 @@ const AddText = () => {
     event.preventDefault();
     db.collection("todos").add({
       text: input,
+      month: new Date().getMonth(),
+      year: new Date().getUTCFullYear(),
       datetime: firebase.firestore.FieldValue.serverTimestamp(),
     });
     setInput("");
